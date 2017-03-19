@@ -6,8 +6,7 @@ public class Bullet implements Runnable{
 	private int yCoordinate;
 	private int direct;
 	private int speed = 1;
-	private boolean isAlive=false;
-
+	private boolean isAlive=true;
 
 	public Bullet(int x,int y,int direct){
 		this.xCoordinate = x;
@@ -40,9 +39,10 @@ public class Bullet implements Runnable{
 			default:
 				break;
 			}
-			//判断子弹何时死亡
-			//1.碰到墙壁
+			//åˆ¤æ–­å­�å¼¹ä½•æ—¶æ­»äº¡
+			//1.ç¢°åˆ°å¢™å£�
 			if (xCoordinate<0||xCoordinate>400||yCoordinate<0||yCoordinate>300) {
+				System.out.println("Bullet alive");
 				isAlive = false;
 				break;
 			}

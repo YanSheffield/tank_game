@@ -20,16 +20,17 @@ public class MyTankGameOne extends JFrame {
 		MyTankGameOne myTankGameOne = new MyTankGameOne();
 	}
 
-	// 构造函数
+	// æž„é€ å‡½æ•°
 	public MyTankGameOne() {
 		myPanel = new MyPanel();
-		// 启动 Mypanel 线程，以保证面板被不停重画
+		// å�¯åŠ¨ Mypanel çº¿ç¨‹ï¼Œä»¥ä¿�è¯�é�¢æ�¿è¢«ä¸�å�œé‡�ç”»
 		Thread thread = new Thread(myPanel);
 		thread.start();
 		this.add(myPanel);
-		this.setSize(400, 300);
+//		this.setSize(400, 300);
+		this.setBounds(300, 400, 400, 300);
 		this.setVisible(true);
-		// 事件发生的地点，事件类型，事件接受（需要完成 Event 方法，任意类都可以）
+		// äº‹ä»¶å�‘ç”Ÿçš„åœ°ç‚¹ï¼Œäº‹ä»¶ç±»åž‹ï¼Œäº‹ä»¶æŽ¥å�—ï¼ˆéœ€è¦�å®Œæˆ� Event æ–¹æ³•ï¼Œä»»æ„�ç±»éƒ½å�¯ä»¥ï¼‰
 		// this.addMouseListener()
 		this.addKeyListener(myPanel);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,21 +39,21 @@ public class MyTankGameOne extends JFrame {
 
 class MyPanel extends JPanel implements KeyListener, Runnable {
 
-	private int x = 150;
-	private int y = 150;
-	// 定义我的坦克
+	private int heroX = 150;
+	private int heroY = 150;
+	// å®šä¹‰æˆ‘çš„å�¦å…‹
 	MyHero hero = null;
 	int enemySize = 3;
-	// 定义敌人的坦克
+	// å®šä¹‰æ•Œäººçš„å�¦å…‹
 	Vector<Enemy> enemies = new Vector<>();
 
-	// 在构造方法中进行一些初始化的工作
+	// åœ¨æž„é€ æ–¹æ³•ä¸­è¿›è¡Œä¸€äº›åˆ�å§‹åŒ–çš„å·¥ä½œ
 	public MyPanel() {
-		// 初始化我的坦克
-		hero = new MyHero(x, y);
-		// 初始化敌人的坦克
+		// åˆ�å§‹åŒ–æˆ‘çš„å�¦å…‹
+		hero = new MyHero(heroX, heroY);
+		// åˆ�å§‹åŒ–æ•Œäººçš„å�¦å…‹
 		for (int i = 0; i < enemySize; i++) {
-			Enemy em = new Enemy((i + 1) * 50, 0);
+			Enemy em = new Enemy((i+1) * 50, 50);
 			em.setColor(1);
 			em.setDirect(2);
 			enemies.add(em);
@@ -69,31 +70,27 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
 			this.drawTanks(enemies.get(i).getTankXCoordinate(), enemies.get(i).getTankYCoordinate(), graphics,
 					enemies.get(i).getDirect(), enemies.get(i).getColor());
 		}
-		// hero坦克的子弹
-		// draw bullets，很明显，一开始是没有子弹的，所以不会进入
-		// 加上一些条件后，既能够保证不抛出异常，又使得此功能不会被白白调用，而影响性能不浪费资源
-		if (hero.bullet != null && hero.bullet.isAlive() == true) {
-			graphics.setColor(Color.white);
-			graphics.fillRect(hero.bullet.getxCoordinate(), hero.bullet.getyCoordinate(), 1, 1);
-			// System.out.println("+++"+hero.bullet.getxCoordinate());
-		}
-		// 敌人坦克的子弹.为什么子弹会动？子弹的坐标依赖坦克的坐标，坦克不动，子弹也不会动
+		
+		// heroå�¦å…‹çš„å­�å¼¹
+		// draw bulletsï¼Œå¾ˆæ˜Žæ˜¾ï¼Œä¸€å¼€å§‹æ˜¯æ²¡æœ‰å­�å¼¹çš„ï¼Œæ‰€ä»¥ä¸�ä¼šè¿›å…¥
+		// åŠ ä¸Šä¸€äº›æ�¡ä»¶å�Žï¼Œæ—¢èƒ½å¤Ÿä¿�è¯�ä¸�æŠ›å‡ºå¼‚å¸¸ï¼Œå�ˆä½¿å¾—æ­¤åŠŸèƒ½ä¸�ä¼šè¢«ç™½ç™½è°ƒç”¨ï¼Œè€Œå½±å“�æ€§èƒ½ä¸�æµªè´¹èµ„æº�
 		graphics.setColor(Color.red);
+		if (hero.bullet != null && hero.bullet.isAlive() == true) {
+			graphics.fillRect(hero.bullet.getxCoordinate(), hero.bullet.getyCoordinate(), 1, 2);
+			 System.out.println("X"+hero.bullet.getxCoordinate()+"Y "+hero.bullet.getyCoordinate());
+		}
+		// æ•Œäººå�¦å…‹çš„å­�å¼¹.ä¸ºä»€ä¹ˆå­�å¼¹ä¼šåŠ¨ï¼Ÿå­�å¼¹çš„å��æ ‡ä¾�èµ–å�¦å…‹çš„å��æ ‡ï¼Œå�¦å…‹ä¸�åŠ¨ï¼Œå­�å¼¹ä¹Ÿä¸�ä¼šåŠ¨
+		
 		if (enemies.get(1).bullet != null) {
 			for (int i = 0; i < enemies.size(); i++) {
-				// 因为每次重绘都重新 bullet 对象，所以创建了都一直清除原来的数据
+				// å› ä¸ºæ¯�æ¬¡é‡�ç»˜éƒ½é‡�æ–° bullet å¯¹è±¡ï¼Œæ‰€ä»¥åˆ›å»ºäº†éƒ½ä¸€ç›´æ¸…é™¤åŽŸæ�¥çš„æ•°æ�®
 				graphics.fillRect(enemies.get(i).bullet.getxCoordinate(), enemies.get(i).bullet.getyCoordinate(), 3, 3);
 				// System.out.println("@@@@"+enemies.get(i).bullet.getxCoordinate());
 			}
 		}
 		
 //		enemies.get(0).shoot();
-			Thread thread = new Thread(enemies.get(0));
-			Thread thread2 = new Thread(enemies.get(1));
-			Thread thread3 = new Thread(enemies.get(2));
-			thread.start();
-			thread2.start();
-			thread3.start();
+		moveEnemyTanks();
 	}
 
 	public void drawTanks(int x, int y, Graphics graphics, int dirction, int type) {
@@ -104,13 +101,15 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
 		case 1:
 			graphics.setColor(Color.yellow);
 			break;
+		case 2:
+			graphics.setColor(Color.red);
 		default:
 			break;
 		}
-		// 判断方向
+		// åˆ¤æ–­æ–¹å�‘
 		switch (dirction) {
-		case 0:// 向上
-				// 画出我的坦克,two wheels
+		case 0:// å�‘ä¸Š
+				// ç”»å‡ºæˆ‘çš„å�¦å…‹,two wheels
 			graphics.fillRect(x, y, 5, 30);
 
 			graphics.fillRect(x + 15, y, 5, 30);
@@ -122,15 +121,15 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
 			graphics.drawLine(x + 10, y + 15, x + 10, y);
 			break;
 
-		case 1:// 向右
+		case 1:// å�‘å�³
 			graphics.fillRect(x, y, 30, 5);
 			graphics.fillRect(x, y + 15, 30, 5);
 			graphics.fillRect(x + 5, y + 5, 20, 10);
 			graphics.fillOval(x + 10, y + 5, 10, 10);
 			graphics.drawLine(x + 15, y + 10, x + 30, y + 10);
 			break;
-		case 2:// 向下
-				// 画出我的坦克,two wheels
+		case 2:// å�‘ä¸‹
+				// ç”»å‡ºæˆ‘çš„å�¦å…‹,two wheels
 			graphics.fillRect(x, y, 5, 30);
 
 			graphics.fillRect(x + 15, y, 5, 30);
@@ -142,7 +141,7 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
 			graphics.drawLine(x + 10, y + 15, x + 10, y + 30);
 			break;
 		case 3:
-			// 画出我的坦克,two wheels
+			// ç”»å‡ºæˆ‘çš„å�¦å…‹,two wheels
 			graphics.fillRect(x, y, 30, 5);
 			graphics.fillRect(x, y + 15, 30, 5);
 			graphics.fillRect(x + 5, y + 5, 20, 10);
@@ -185,10 +184,10 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
 			enemies.get(1).shoot();
 			enemies.get(2).shoot();
 		}
-//		if(e.getKeyCode() == KeyEvent.VK_E){
+		if(e.getKeyCode() == KeyEvent.VK_E){
 			
 			
-//		}
+		}
 		this.repaint();
 	}
 
@@ -209,5 +208,14 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
 			this.repaint();
 		}
 
+	}
+	
+	public void moveEnemyTanks(){
+		Thread thread = new Thread(enemies.get(0));
+		Thread thread2 = new Thread(enemies.get(1));
+		Thread thread3 = new Thread(enemies.get(2));
+		thread.start();
+		thread2.start();
+		thread3.start();
 	}
 }
